@@ -1,0 +1,62 @@
+{
+  "seed": 42,
+  "test_fraction": 0.2,
+  "stratify_holdout": true,
+  "development_cv_folds": 5,
+  "decision_threshold": 0.5,
+  "primary_comparison": "Hybrid MiniLM + XGBoost versus structured XGBoost",
+  "primary_metric": "roc_auc",
+  "hyperparameter_selection": "Fixed configurations; no tuning or test-driven selection",
+  "numeric_features": ["Tenure Months", "Monthly Charges", "Total Charges"],
+  "text_source_features": ["Contract", "Tenure Months", "Monthly Charges", "Internet Service", "Tech Support"],
+  "tenure_bin_edges_months": [12, 36],
+  "monthly_charge_bin_edges": [35, 70],
+  "encoder": {
+    "checkpoint": "sentence-transformers/all-MiniLM-L6-v2",
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "backend": "ONNX Runtime, CPU, unquantized model.onnx",
+    "pooling": "attention-mask mean pooling followed by L2 normalization",
+    "maximum_word_pieces": 256,
+    "frozen": true
+  },
+  "logistic_regression": {
+    "C": 1.0,
+    "max_iter": 2000,
+    "solver": "lbfgs",
+    "class_weight": "balanced"
+  },
+  "xgboost": {
+    "n_estimators": 250,
+    "max_depth": 3,
+    "learning_rate": 0.04,
+    "min_child_weight": 5,
+    "subsample": 0.8,
+    "colsample_bytree": 1.0,
+    "reg_lambda": 5.0,
+    "tree_method": "hist",
+    "n_jobs": 4,
+    "eval_metric": "logloss"
+  },
+  "feedforward": {
+    "hidden_layer_sizes": [64, 32],
+    "activation": "relu",
+    "solver": "adam",
+    "alpha": 0.0001,
+    "batch_size": 64,
+    "learning_rate_init": 0.001,
+    "epochs": 20
+  },
+  "deep_feedforward": {
+    "hidden_layer_sizes": [128, 64, 32],
+    "activation": "relu",
+    "solver": "adam",
+    "alpha": 0.0001,
+    "batch_size": 64,
+    "learning_rate_init": 0.001,
+    "epochs": 20
+  },
+  "class_imbalance": "Training-partition balanced weights for logistic/MLP; negative/positive ratio for XGBoost",
+  "ablation_models": ["Text-only XGBoost", "Structured + shuffled embeddings", "Structured + profile-ID one-hot"],
+  "bootstrap_replicates": 2000,
+  "uncertainty": "Paired class-stratified percentile bootstrap on the held-out predictions; conditional on these fitted models; no p-value or population-wide superiority claim"
+}

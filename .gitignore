@@ -1,0 +1,23 @@
+# Python environments and generated package files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Downloaded checkpoints, Matplotlib cache, and generated run artifacts
+.cache/
+/results/
+*.part
+
+# Local editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
